@@ -23,11 +23,17 @@ def chat(messages: list[dict[str, str]]) -> str:
     Raises:
         ImportError: If the openai package is not installed.
         ValueError: If OPENAI_API_KEY is not set.
+
+    Note:
+        This uses deepeval's drop-in OpenAI client, so every chat completion is
+        automatically captured as an ``llm`` span in the current trace.
     """
     try:
-        from openai import OpenAI
+        from deepeval.openai import OpenAI
     except ImportError as e:
-        raise ImportError("openai package is required. Install with: pip install openai") from e
+        raise ImportError(
+            "deepeval and openai packages are required. Install with: pip install deepeval openai"
+        ) from e
 
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
