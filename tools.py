@@ -8,7 +8,10 @@ Each tool has a clear interface and documentation for the agent to understand.
 import time
 from datetime import datetime
 
+from deepeval.tracing import observe, update_current_span
 
+
+@observe(type="tool")
 def calculator(expression: str) -> str:
     """
     Evaluate a mathematical expression and return the result.
@@ -26,14 +29,17 @@ def calculator(expression: str) -> str:
         # Validate that the expression only contains safe characters
         safe_chars = set("0123456789+-*/(). ")
         if not all(c in safe_chars for c in expression):
-            return f"Error: Invalid characters in expression"
-
-        result = eval(expression, {"__builtins__": {}}, {})
-        return str(result)
+            result_str = "Error: Invalid characters in expression"
+        else:
+            result_str = str(eval(expression, {"__builtins__": {}}, {}))
     except Exception as e:
-        return f"Error evaluating expression: {str(e)}"
+        result_str = f"Error evaluating expression: {str(e)}"
+
+    update_current_span(input={"expression": expression}, output=result_str)
+    return result_str
 
 
+@observe(type="tool")
 def get_current_time() -> str:
     """
     Return the current date and time.
@@ -41,4 +47,6 @@ def get_current_time() -> str:
     Returns:
         A formatted string with the current date and time (ISO 8601 format).
     """
-    return datetime.now().isoformat()
+    now = datetime.now().isoformat()
+    update_current_span(output=now)
+    return now

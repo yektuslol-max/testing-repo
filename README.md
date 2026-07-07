@@ -71,7 +71,7 @@ The agent will answer three example questions and display the reasoning process.
 
 ## Design Notes
 
-- **No Observability** — This codebase is intentionally uninstrumented. It's designed to be a clean foundation for adding tracing, logging, or other observability tools later.
+- **Tracing** — The agent is instrumented with [DeepEval](https://www.confident-ai.com) tracing. The LLM, retriever, tool, and agent components each emit a span, so a run can be inspected step by step in Confident AI (see [Observability](#observability)).
 - **Clean Module Boundaries** — Each module has a single responsibility and can be tested independently.
 - **Realistic Structure** — The agent loop mimics real-world agent implementations with explicit decision points.
 - **Mock Data** — Uses a hard-coded knowledge base and mock tools for reproducibility without external dependencies.
@@ -91,6 +91,24 @@ Agent: The result of 42 multiplied by 7 is 294.
 User: What is Kubernetes and why is it useful?
 Agent: Kubernetes is an open-source container orchestration platform...
 ```
+
+## Observability
+
+This app is traced with [DeepEval](https://www.confident-ai.com) native tracing:
+
+- `llm.py` uses `deepeval.openai.OpenAI`, a drop-in replacement that emits an
+  **LLM span** for every chat completion.
+- `retriever.retrieve`, the tools in `tools.py`, and `Agent.run` are wrapped with
+  `@observe` as **retriever**, **tool**, and **agent** spans respectively.
+
+To send traces to Confident AI, set `CONFIDENT_API_KEY` in your `.env`
+(get one from your Confident AI account, then copy `.env.example` to `.env`):
+
+```
+CONFIDENT_API_KEY=...
+```
+
+Without the key the app still runs normally; traces simply are not uploaded.
 
 ## Future Enhancements
 

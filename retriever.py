@@ -5,6 +5,8 @@ This module implements a basic in-memory knowledge base with keyword matching.
 In a real system, this would query a vector database or full-text search engine.
 """
 
+from deepeval.tracing import observe, update_current_span
+
 
 # Hard-coded document snippets for the knowledge base
 DOCUMENTS = [
@@ -21,6 +23,7 @@ DOCUMENTS = [
 ]
 
 
+@observe(type="retriever")
 def retrieve(query: str) -> list[str]:
     """
     Retrieve relevant documents from the knowledge base using keyword matching.
@@ -38,16 +41,26 @@ def retrieve(query: str) -> list[str]:
     keywords = [word for word in query_lower.split() if len(word) > 3]
 
     if not keywords:
-        return []
+        results = []
+    else:
+        # Score each document by matching keywords
+        scored_docs = []
+        for doc in DOCUMENTS:
+            doc_lower = doc.lower()
+            score = sum(1 for keyword in keywords if keyword in doc_lower)
+            if score > 0:
+                scored_docs.append((score, doc))
 
-    # Score each document by matching keywords
-    scored_docs = []
-    for doc in DOCUMENTS:
-        doc_lower = doc.lower()
-        score = sum(1 for keyword in keywords if keyword in doc_lower)
-        if score > 0:
-            scored_docs.append((score, doc))
+        # Sort by score (descending) and keep just the documents
+        scored_docs.sort(key=lambda x: x[0], reverse=True)
+        results = [doc for _, doc in scored_docs]
 
-    # Sort by score (descending) and return just the documents
-    scored_docs.sort(key=lambda x: x[0], reverse=True)
-    return [doc for _, doc in scored_docs]
+    update_current_span(
+        input=query,
+        output=results,
+        metadata={
+            "knowledge_base_size": len(DOCUMENTS),
+            "retrieved_documents": len(results),
+        },
+    )
+    return results
