@@ -8,6 +8,8 @@ deciding whether to use tools, and then synthesizing a final answer using an LLM
 import json
 from typing import Any
 
+from deepeval.tracing import observe, update_current_trace
+
 import llm
 import retriever
 import tools
@@ -31,6 +33,7 @@ class Agent:
             "get_current_time": tools.get_current_time,
         }
 
+    @observe(type="agent")
     def run(self, question: str) -> str:
         """
         Run the agent to answer a question.
@@ -116,4 +119,12 @@ User question: {question}""",
             )
 
         answer = llm.chat(final_messages)
+
+        # Record the end-to-end trace input/output so the agent run is
+        # inspectable span by span in Confident AI.
+        update_current_trace(
+            input=question,
+            output=answer,
+            tags=["research-assistant", "rag"],
+        )
         return answer
