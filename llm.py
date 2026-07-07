@@ -25,9 +25,15 @@ def chat(messages: list[dict[str, str]]) -> str:
         ValueError: If OPENAI_API_KEY is not set.
     """
     try:
-        from openai import OpenAI
+        # deepeval.openai.OpenAI is a drop-in replacement for openai.OpenAI:
+        # every chat.completions.create(...) call becomes a traced LLM span
+        # (input messages, output, token counts) in Confident AI, with no
+        # change to how the API is called.
+        from deepeval.openai import OpenAI
     except ImportError as e:
-        raise ImportError("openai package is required. Install with: pip install openai") from e
+        raise ImportError(
+            "deepeval and openai packages are required. Install with: pip install deepeval openai"
+        ) from e
 
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
