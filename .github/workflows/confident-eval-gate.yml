@@ -1,0 +1,28 @@
+name: Confident PR Eval Gate
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+permissions:
+  contents: read
+jobs:
+  eval-gate:
+    runs-on: ubuntu-latest
+    env:
+      # Runtime secret the app needs so run() can execute (agent -> llm.py ->
+      # OpenAI). Set OPENAI_API_KEY as a repository secret.
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Confident PR Eval Gate
+        uses: confident-ai/deepeval-tracer/actions/eval-gate@v1
+        with:
+          base_url: "https://oversweet-thyself-stew.ngrok-free.dev"
+          dataset_alias: "test-dataset"
+          dataset_version: "latest"
+          confident_api_key: ${{ secrets.CONFIDENT_API_KEY }}
