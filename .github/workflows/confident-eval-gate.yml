@@ -1,4 +1,6 @@
 name: Confident PR Eval Gate
+# Keep these triggers so the gate runs on every pull request (and refreshes the
+# baseline on pushes to the default branch).
 on:
   pull_request:
   push:
@@ -19,10 +21,11 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements.txt
+      # Managed by Confident — keep this step and its inputs as-is.
       - name: Confident PR Eval Gate
         uses: confident-ai/deepeval-tracer/actions/eval-gate@v1
         with:
-          base_url: "https://oversweet-thyself-stew.ngrok-free.dev"
-          dataset_alias: "test-dataset"
+          base_url: "https://api.confident-ai.com"
+          dataset_alias: "Basics"
           dataset_version: "latest"
           confident_api_key: ${{ secrets.CONFIDENT_API_KEY }}
