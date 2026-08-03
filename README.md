@@ -101,3 +101,6 @@ This codebase is designed to be extended with:
 - Performance monitoring
 - Agent evaluation frameworks
 - Vector database integration for retrieval
+
+## Deployment
+Production base URL: https://httpbin.org
