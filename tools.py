@@ -5,10 +5,12 @@ These tools can be called by the agent to augment its reasoning capabilities.
 Each tool has a clear interface and documentation for the agent to understand.
 """
 
-import time
 from datetime import datetime
 
+from deepeval.tracing import observe
 
+
+@observe(type="tool", description="Evaluate a safe arithmetic expression")
 def calculator(expression: str) -> str:
     """
     Evaluate a mathematical expression and return the result.
@@ -34,6 +36,7 @@ def calculator(expression: str) -> str:
         return f"Error evaluating expression: {str(e)}"
 
 
+@observe(type="tool", description="Return the current ISO 8601 timestamp")
 def get_current_time() -> str:
     """
     Return the current date and time.
