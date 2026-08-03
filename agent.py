@@ -8,6 +8,8 @@ deciding whether to use tools, and then synthesizing a final answer using an LLM
 import json
 from typing import Any
 
+from deepeval.tracing import observe
+
 import llm
 import retriever
 import tools
@@ -31,6 +33,7 @@ class Agent:
             "get_current_time": tools.get_current_time,
         }
 
+    @observe(type="agent")
     def run(self, question: str) -> str:
         """
         Run the agent to answer a question.
