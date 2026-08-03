@@ -11,6 +11,7 @@ from typing import Any
 import llm
 import retriever
 import tools
+from observability import configure_confident_tracing, observe
 
 
 class Agent:
@@ -26,11 +27,13 @@ class Agent:
 
     def __init__(self):
         """Initialize the agent."""
+        configure_confident_tracing()
         self.available_tools = {
             "calculator": tools.calculator,
             "get_current_time": tools.get_current_time,
         }
 
+    @observe(type="agent", name="research_assistant_agent", available_tools=["calculator", "get_current_time"])
     def run(self, question: str) -> str:
         """
         Run the agent to answer a question.

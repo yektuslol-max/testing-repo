@@ -8,7 +8,10 @@ The OPENAI_API_KEY environment variable must be set to use this module.
 import os
 from typing import Any
 
+from observability import observe
 
+
+@observe(type="llm", name="openai_chat_completion", model="gpt-3.5-turbo")
 def chat(messages: list[dict[str, str]]) -> str:
     """
     Send a list of messages to the OpenAI Chat Completions API and return the response.

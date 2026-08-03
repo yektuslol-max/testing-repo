@@ -10,12 +10,14 @@ import os
 from dotenv import load_dotenv
 
 from agent import Agent
+from observability import configure_confident_tracing
 
 
 def main():
     """Run the research assistant agent with example questions."""
     # Load environment variables from .env file
     load_dotenv()
+    configure_confident_tracing()
 
     # Verify that the API key is set
     if not os.getenv("OPENAI_API_KEY"):

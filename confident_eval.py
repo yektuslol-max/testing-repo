@@ -8,8 +8,10 @@ string.
 """
 
 from agent import Agent
+from observability import configure_confident_tracing
 
 # Instantiate once and reuse across dataset rows.
+configure_confident_tracing()
 _agent = Agent()
 
 
