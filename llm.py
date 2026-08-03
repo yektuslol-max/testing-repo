@@ -6,7 +6,16 @@ The OPENAI_API_KEY environment variable must be set to use this module.
 """
 
 import os
-from typing import Any
+
+import deepeval.openai  # Native OpenAI patching for deepeval tracing.
+from deepeval.tracing import trace_manager
+
+
+def configure_confident_tracing() -> None:
+    """Configure tracing when a Confident API key is present."""
+    confident_api_key = os.getenv("CONFIDENT_API_KEY")
+    if confident_api_key:
+        trace_manager.configure(confident_api_key=confident_api_key)
 
 
 def chat(messages: list[dict[str, str]]) -> str:
