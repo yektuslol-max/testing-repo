@@ -10,17 +10,20 @@ import os
 from dotenv import load_dotenv
 
 from agent import Agent
+from tracing_config import configure_tracing
 
 
 def main():
     """Run the research assistant agent with example questions."""
     # Load environment variables from .env file
     load_dotenv()
+    configure_tracing()
 
     # Verify that the API key is set
     if not os.getenv("OPENAI_API_KEY"):
         print("Error: OPENAI_API_KEY environment variable is not set.")
         print("Please copy .env.example to .env and add your OpenAI API key.")
+        print("Set CONFIDENT_API_KEY as well if you want to export traces to Confident AI.")
         return
 
     # Initialize the agent

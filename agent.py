@@ -8,9 +8,12 @@ deciding whether to use tools, and then synthesizing a final answer using an LLM
 import json
 from typing import Any
 
+from deepeval.tracing import observe, update_current_trace
+
 import llm
 import retriever
 import tools
+from tracing_config import configure_tracing
 
 
 class Agent:
@@ -26,11 +29,13 @@ class Agent:
 
     def __init__(self):
         """Initialize the agent."""
+        configure_tracing()
         self.available_tools = {
             "calculator": tools.calculator,
             "get_current_time": tools.get_current_time,
         }
 
+    @observe(type="agent")
     def run(self, question: str) -> str:
         """
         Run the agent to answer a question.
@@ -41,6 +46,12 @@ class Agent:
         Returns:
             The agent's final answer.
         """
+        update_current_trace(
+            input=question,
+            tags=["research-assistant", "rag", "tool-using-agent"],
+            metadata={"available_tools": list(self.available_tools.keys())},
+        )
+
         # Step 1: Retrieve relevant context
         context_docs = retriever.retrieve(question)
         context_str = "\n".join([f"- {doc}" for doc in context_docs]) if context_docs else "No relevant documents found."
@@ -116,4 +127,5 @@ User question: {question}""",
             )
 
         answer = llm.chat(final_messages)
+        update_current_trace(output=answer)
         return answer
