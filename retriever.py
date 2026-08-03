@@ -21,6 +21,10 @@ DOCUMENTS = [
 ]
 
 
+from deepeval.tracing import observe
+
+
+@observe(type="retriever", name="keyword_retriever", embedder="keyword-matching")
 def retrieve(query: str) -> list[str]:
     """
     Retrieve relevant documents from the knowledge base using keyword matching.
