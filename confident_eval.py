@@ -7,6 +7,10 @@ research assistant agent expects. We invoke the agent and return its answer as a
 string.
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from agent import Agent
 
 # Instantiate once and reuse across dataset rows.

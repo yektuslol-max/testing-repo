@@ -9,14 +9,13 @@ import os
 
 from dotenv import load_dotenv
 
+load_dotenv()
+
 from agent import Agent
 
 
 def main():
     """Run the research assistant agent with example questions."""
-    # Load environment variables from .env file
-    load_dotenv()
-
     # Verify that the API key is set
     if not os.getenv("OPENAI_API_KEY"):
         print("Error: OPENAI_API_KEY environment variable is not set.")

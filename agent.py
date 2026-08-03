@@ -8,6 +8,7 @@ deciding whether to use tools, and then synthesizing a final answer using an LLM
 import json
 from typing import Any
 
+import observability
 import llm
 import retriever
 import tools
@@ -31,6 +32,7 @@ class Agent:
             "get_current_time": tools.get_current_time,
         }
 
+    @observability.observe(type="agent")
     def run(self, question: str) -> str:
         """
         Run the agent to answer a question.
@@ -116,4 +118,5 @@ User question: {question}""",
             )
 
         answer = llm.chat(final_messages)
+        observability.update_current_trace(input=question, output=answer)
         return answer
