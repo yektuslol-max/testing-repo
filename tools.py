@@ -8,7 +8,10 @@ Each tool has a clear interface and documentation for the agent to understand.
 import time
 from datetime import datetime
 
+from deepeval.tracing import observe
 
+
+@observe(type="tool", name="calculator", description="Evaluate a mathematical expression")
 def calculator(expression: str) -> str:
     """
     Evaluate a mathematical expression and return the result.
@@ -34,6 +37,7 @@ def calculator(expression: str) -> str:
         return f"Error evaluating expression: {str(e)}"
 
 
+@observe(type="tool", name="get_current_time", description="Return the current ISO timestamp")
 def get_current_time() -> str:
     """
     Return the current date and time.
