@@ -103,5 +103,4 @@ This codebase is designed to be extended with:
 - Vector database integration for retrieval
 
 ## Deployment
-
-The assistant is served at `https://httpbin.org/post` (POST `/chat`).
+Production base URL: https://httpbin.org
