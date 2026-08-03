@@ -8,7 +8,10 @@ The OPENAI_API_KEY environment variable must be set to use this module.
 import os
 from typing import Any
 
+from tracing import trace_span
 
+
+@trace_span("llm", name="openai_chat_completion")
 def chat(messages: list[dict[str, str]]) -> str:
     """
     Send a list of messages to the OpenAI Chat Completions API and return the response.

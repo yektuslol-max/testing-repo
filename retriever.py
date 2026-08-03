@@ -5,6 +5,8 @@ This module implements a basic in-memory knowledge base with keyword matching.
 In a real system, this would query a vector database or full-text search engine.
 """
 
+from tracing import trace_span
+
 
 # Hard-coded document snippets for the knowledge base
 DOCUMENTS = [
@@ -21,6 +23,7 @@ DOCUMENTS = [
 ]
 
 
+@trace_span("retriever", name="keyword_retrieve")
 def retrieve(query: str) -> list[str]:
     """
     Retrieve relevant documents from the knowledge base using keyword matching.
