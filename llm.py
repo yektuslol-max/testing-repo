@@ -8,6 +8,8 @@ The OPENAI_API_KEY environment variable must be set to use this module.
 import os
 from typing import Any
 
+import observability  # noqa: F401
+
 
 def chat(messages: list[dict[str, str]]) -> str:
     """

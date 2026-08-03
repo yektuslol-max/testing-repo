@@ -57,6 +57,7 @@ This is a clean example of an agent architecture suitable for adding observabili
    Then edit `.env` and add your OpenAI API key:
    ```
    OPENAI_API_KEY=sk-...
+   CONFIDENT_API_KEY=conf-...
    ```
 
 ## Running the Agent
@@ -71,7 +72,7 @@ The agent will answer three example questions and display the reasoning process.
 
 ## Design Notes
 
-- **No Observability** — This codebase is intentionally uninstrumented. It's designed to be a clean foundation for adding tracing, logging, or other observability tools later.
+- **Tracing Enabled** — OpenAI calls are auto-patched by DeepEval tracing, with agent, retriever, and tool spans annotated for Confident AI.
 - **Clean Module Boundaries** — Each module has a single responsibility and can be tested independently.
 - **Realistic Structure** — The agent loop mimics real-world agent implementations with explicit decision points.
 - **Mock Data** — Uses a hard-coded knowledge base and mock tools for reproducibility without external dependencies.

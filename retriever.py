@@ -5,6 +5,8 @@ This module implements a basic in-memory knowledge base with keyword matching.
 In a real system, this would query a vector database or full-text search engine.
 """
 
+import observability
+
 
 # Hard-coded document snippets for the knowledge base
 DOCUMENTS = [
@@ -21,6 +23,7 @@ DOCUMENTS = [
 ]
 
 
+@observability.observe(type="retriever")
 def retrieve(query: str) -> list[str]:
     """
     Retrieve relevant documents from the knowledge base using keyword matching.
@@ -38,6 +41,11 @@ def retrieve(query: str) -> list[str]:
     keywords = [word for word in query_lower.split() if len(word) > 3]
 
     if not keywords:
+        observability.update_current_span(
+            input=query,
+            output=[],
+            metadata={"retriever": "keyword_match", "document_count": 0},
+        )
         return []
 
     # Score each document by matching keywords
@@ -50,4 +58,10 @@ def retrieve(query: str) -> list[str]:
 
     # Sort by score (descending) and return just the documents
     scored_docs.sort(key=lambda x: x[0], reverse=True)
-    return [doc for _, doc in scored_docs]
+    docs = [doc for _, doc in scored_docs]
+    observability.update_current_span(
+        input=query,
+        output=docs,
+        metadata={"retriever": "keyword_match", "document_count": len(docs)},
+    )
+    return docs
