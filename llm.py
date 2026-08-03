@@ -8,6 +8,8 @@ The OPENAI_API_KEY environment variable must be set to use this module.
 import os
 from typing import Any
 
+from deepeval.openai import OpenAI
+
 
 def chat(messages: list[dict[str, str]]) -> str:
     """
@@ -24,11 +26,6 @@ def chat(messages: list[dict[str, str]]) -> str:
         ImportError: If the openai package is not installed.
         ValueError: If OPENAI_API_KEY is not set.
     """
-    try:
-        from openai import OpenAI
-    except ImportError as e:
-        raise ImportError("openai package is required. Install with: pip install openai") from e
-
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable is not set")
