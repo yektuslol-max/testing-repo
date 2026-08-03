@@ -101,3 +101,7 @@ This codebase is designed to be extended with:
 - Performance monitoring
 - Agent evaluation frameworks
 - Vector database integration for retrieval
+
+## Deployment
+
+The assistant is served at `https://httpbin.org/post` (POST `/chat`).
