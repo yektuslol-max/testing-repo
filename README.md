@@ -58,6 +58,10 @@ This is a clean example of an agent architecture suitable for adding observabili
    ```
    OPENAI_API_KEY=sk-...
    ```
+   To export traces to Confident AI, also set:
+   ```
+   CONFIDENT_API_KEY=...
+   ```
 
 ## Running the Agent
 

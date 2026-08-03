@@ -8,6 +8,9 @@ string.
 """
 
 from agent import Agent
+from tracing_config import configure_tracing
+
+configure_tracing()
 
 # Instantiate once and reuse across dataset rows.
 _agent = Agent()

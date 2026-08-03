@@ -8,7 +8,10 @@ The OPENAI_API_KEY environment variable must be set to use this module.
 import os
 from typing import Any
 
+from deepeval.tracing import observe, update_current_span
 
+
+@observe(type="llm")
 def chat(messages: list[dict[str, str]]) -> str:
     """
     Send a list of messages to the OpenAI Chat Completions API and return the response.
@@ -41,4 +44,10 @@ def chat(messages: list[dict[str, str]]) -> str:
         temperature=0.7,
     )
 
-    return response.choices[0].message.content
+    output = response.choices[0].message.content
+    update_current_span(
+        input=messages,
+        output=output,
+        metadata={"model": "gpt-3.5-turbo"},
+    )
+    return output
