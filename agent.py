@@ -11,6 +11,7 @@ from typing import Any
 import llm
 import retriever
 import tools
+from tracing import trace_span
 
 
 class Agent:
@@ -31,6 +32,7 @@ class Agent:
             "get_current_time": tools.get_current_time,
         }
 
+    @trace_span("agent", name="research_assistant_agent")
     def run(self, question: str) -> str:
         """
         Run the agent to answer a question.

@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from agent import Agent
+from tracing import tracing_context
 
 app = FastAPI()
 agent = Agent()
@@ -10,8 +11,10 @@ agent = Agent()
 
 class ChatRequest(BaseModel):
     question: str
+    testCaseId: str | None = None
 
 
 @app.post("/chat")
 def chat(req: ChatRequest):
-    return {"answer": agent.run(req.question)}
+    with tracing_context(req.testCaseId):
+        return {"answer": agent.run(req.question)}
