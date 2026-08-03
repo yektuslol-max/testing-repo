@@ -8,7 +8,10 @@ Each tool has a clear interface and documentation for the agent to understand.
 import time
 from datetime import datetime
 
+from tracing_utils import observe, update_current_span
 
+
+@observe(type="tool")
 def calculator(expression: str) -> str:
     """
     Evaluate a mathematical expression and return the result.
@@ -26,14 +29,21 @@ def calculator(expression: str) -> str:
         # Validate that the expression only contains safe characters
         safe_chars = set("0123456789+-*/(). ")
         if not all(c in safe_chars for c in expression):
-            return f"Error: Invalid characters in expression"
+            result = "Error: Invalid characters in expression"
+            update_current_span(input={"expression": expression}, output=result)
+            return result
 
         result = eval(expression, {"__builtins__": {}}, {})
-        return str(result)
+        result_str = str(result)
+        update_current_span(input={"expression": expression}, output=result_str)
+        return result_str
     except Exception as e:
-        return f"Error evaluating expression: {str(e)}"
+        result = f"Error evaluating expression: {str(e)}"
+        update_current_span(input={"expression": expression}, output=result)
+        return result
 
 
+@observe(type="tool")
 def get_current_time() -> str:
     """
     Return the current date and time.
@@ -41,4 +51,6 @@ def get_current_time() -> str:
     Returns:
         A formatted string with the current date and time (ISO 8601 format).
     """
-    return datetime.now().isoformat()
+    result = datetime.now().isoformat()
+    update_current_span(input={"tool": "get_current_time"}, output=result)
+    return result
